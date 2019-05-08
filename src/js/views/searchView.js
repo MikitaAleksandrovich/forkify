@@ -8,6 +8,7 @@ export const clearInput = () => {
 
 export const clearResults = () => {
     elements.searchResList.innerHTML = '';
+    elements.searchResPages.innerHTML = '';
 };
 
 /* 
@@ -53,6 +54,44 @@ const renderRecipie = recipe => {
     elements.searchResList.insertAdjacentHTML('beforeend', markup);
 };
 
-export const renderResults = recipes => {
-    recipes.forEach(renderRecipie);
+// type: 'prev' or 'next'
+const createButton = (page, type) => `
+        <button class="btn-inline results__btn--${type}" data-goto=${type === 'prev' ? page - 1 : page + 1}>
+            <span>Page ${type === 'prev' ? page - 1 : page + 1}</span>
+            <svg class="search__icon">
+                <use href="img/icons.svg#icon-triangle-${type === 'prev' ? 'left' : 'right'}"></use>
+            </svg>
+        </button>
+`;
+
+const renderButtons = (page, numResults, resPerPage) => {
+    const pages = Math.ceil(numResults / resPerPage);
+
+    let button;
+    if (page === 1 && pages > 1) {
+        // Only button to go to next page
+        button = createButton(page, 'next'); 
+    } else if (page < pages) {
+        // Both buttons
+        button = `
+            ${createButton(page, 'prev')}
+            ${createButton(page, 'next')}
+        `; 
+    } else if (page === pages && pages > 1) {
+        // Only button to go to prev page
+        button = createButton(page, 'prev'); 
+    };
+
+    elements.searchResPages.insertAdjacentHTML('afterbegin', button);
+};
+
+export const renderResults = (recipes, page = 1, resPerPage = 10) => {
+    // Render results of current page
+    const start = (page - 1) * resPerPage; // When page = 1, starts from 0, when page = 2, from 10 and so on 
+    const end = page * resPerPage; // when page = 1, ends at 10 , when page = 2, at 20 and so on (slice extracts up to but not including the end, so it will copy when page = 1 results from 0 to 9) 
+
+    recipes.slice(start, end).forEach(renderRecipie);
+
+    // Render pagination buttons
+    renderButtons(page, recipes.length, resPerPage);
 };
