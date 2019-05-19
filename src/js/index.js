@@ -85,7 +85,7 @@ const controlRecipe = async () => {
             clearLoader();
             recipeView.renderRecipe(state.recipe);  
         } catch (error) {
-            alert('Error proccesing pecipe!');
+            alert(error);
             clearLoader();
         }
     }
