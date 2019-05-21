@@ -6,7 +6,7 @@ export default class Recipe {
         this.id = id;
     }
 
-    async getRecipe() {
+    async getRecipe () {
         try {
             const res = await axios(`${proxy}https://www.food2fork.com/api/get?key=${key}&rId=${this.id}`);
             this.title = res.data.recipe.title;
@@ -27,11 +27,11 @@ export default class Recipe {
         this.time = periods * 15;
     }
 
-    calcServings() {
+    calcServings () {
         this.servings = 4;
     }
 
-    parseIngrediants() {
+    parseIngrediants () {
         const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pound'];
         const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'pound'];
         const units = [...unitsShort, 'kg', 'g'];
@@ -84,11 +84,21 @@ export default class Recipe {
                     ingredient
                 }
             }
-
             return objIng;
-
         });
         
         this.ingredients = newIngrediants;
+    }
+
+    updateServings(type) {
+        // Servings
+        const newServings = type === 'dec' ? this.servings - 1 : this.servings + 1;
+
+        // Ingredients
+        this.ingredients.forEach(ing => {
+            ing.count *= newServings / this.servings;
+        });
+        
+        this.servings = newServings;
     }
 }
