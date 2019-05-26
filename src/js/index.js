@@ -106,7 +106,7 @@ const controlRecipe = async () => {
 
 
 /** 
- * List CONTROLLER
+ * LIST CONTROLLER
 */
 const controlList = () => {
     // Create a new List IF there is none yet
@@ -139,6 +139,38 @@ elements.shopping.addEventListener('click', e => {
 });
 
 
+/** 
+ * LIKES CONTROLLER
+*/
+const controlLike = () => {
+    if(!state.likes) state.likes = new Likes();
+    const currentID = state.recipe.id;
+
+    // User has NOT yet liked current recipe
+    if(!state.likes.isLiked(currentID)) {
+        // Add like to the data
+        const newLike = state.likes.addLike(
+            currentID,
+            state.recipe.title,
+            state.recipe.author,
+            state.recipe.img
+        );
+        // Toggle the like button
+
+        // Delete like to the UI
+
+    // User HAS liked current recipe
+    } else {
+        // Remove like from the data
+        state.likes.deleteLike(currentID);
+        // Toggle the like button
+
+        // Remove like from the UI
+
+    }
+
+}
+
 
 
 // Handling recipe button clicks
@@ -153,8 +185,12 @@ elements.recipe.addEventListener('click', e => {
         // Increase button is clicked
         state.recipe.updateServings('inc');
         recipeView.updateServingsIngredients(state.recipe);
-    } else if (e.target.matches('.recipe__btn--add')) {
+    } else if (e.target.matches('.recipe__btn--add, .recipe__btn--add *')) {
+        // Add ingredients to the shopping list
         controlList();
+    } else if (e.target.matches('.recipe__love, .recipe__love *')) {
+        // Like Controller
+        controlLike();
     }
 });
 
