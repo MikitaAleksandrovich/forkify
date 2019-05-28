@@ -16,8 +16,9 @@ export const highlightSelected = id => {
     resultsArr.forEach(el => {
         el.classList.remove('results__link--active');
     });
-    document.querySelector(`.results__link[href="#${id}"]`).classList.toggle('results__link--active');
+    document.querySelector(`.results__link[href="#${id}"]`).classList.add('results__link--active');
 };
+
 
 /* 
 // Pasta with tomato and spinach
